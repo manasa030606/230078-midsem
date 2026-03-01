@@ -1,0 +1,136 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part A",
+    "submission_date": "2026-03-02"
+  },
+
+  "selected_paper": {
+    "title": "Exact Soft Confidence-Weighted Learning",
+    "authors": "Jialei Wang, Peilin Zhao, Steven C.H. Hoi",
+    "venue": "ICML 2012",
+    "venue_rank": "A*",
+    "year": 2012,
+    "primary_method": "Support Vector Machine (SVM) — Online Large-Margin Learning",
+    "paper_url": "https://arxiv.org/abs/1206.4612"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-01",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "purpose": "Understanding what kind of paper qualifies under AML Part A constraints before starting the search.",
+      "prompt": "For my AML exam, I need to pick a research paper from a top-tier conference like NeurIPS, ICML, AISTATS, or KDD published between 2010 and 2012. It must introduce a core classical ML method — either SVM, GMM, or Time Series. No deep learning, no surveys, no purely empirical papers. What exactly qualifies as a methodological contribution here?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified the difference between a methodological paper (introduces a new algorithm or model) versus an application paper (just uses existing methods on new data). This helped me filter candidates correctly from the start.",
+      "student_verification": "I re-read the Part A guidelines myself and confirmed this interpretation was consistent with what the exam required.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-01",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "purpose": "Getting a shortlist of candidate papers to evaluate and compare.",
+      "prompt": "Can you give me the top 5 research papers from ICML, NeurIPS, AISTATS, or KDD between 2010 and 2012 that introduce a new classical method in SVM, GMM, or Time Series? No deep learning, no survey papers, no benchmark-only papers.",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Gave me a structured shortlist of 5 papers across different syllabus units with brief explanations of each. I used this as a starting point for my own investigation.",
+      "student_verification": "I independently looked up each paper on Google Scholar and ICML proceedings to verify the venue, year, and type of contribution before shortlisting further.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-01",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "purpose": "Identifying the most accessible paper that I could genuinely understand and explain.",
+      "prompt": "Out of these 5 papers, which one would be the easiest for me to understand end-to-end and explain clearly in an exam? I want something where I can grasp the core algorithm without needing deep mathematical background, while still satisfying all the Part A constraints.",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Recommended 'Exact Soft Confidence-Weighted Learning' (ICML 2012) as the most self-contained and accessible paper with a clear, explainable core idea.",
+      "student_verification": "I read the abstract, introduction, and algorithm section of the paper myself to confirm I could follow and explain it independently before committing to it.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-02",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "purpose": "Confirming the paper's venue, year, and methodological alignment with AML guidelines.",
+      "prompt": "Can you confirm that 'Exact Soft Confidence-Weighted Learning' by Wang, Zhao, and Hoi is published at ICML 2012? And does it qualify as a methodological SVM paper — meaning it actually introduces a new algorithm rather than just applying SVM to a dataset?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed ICML 2012 publication and clarified that SCW introduces a genuinely new online learning algorithm combining soft-margin and confidence-weighted updates — a clear methodological contribution under the SVM unit.",
+      "student_verification": "I verified the ICML 2012 proceedings entry and read the paper's contribution section directly to confirm it introduces a new algorithm, not just an application.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-02",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "purpose": "Checking reproducibility and compute feasibility before finalizing the selection.",
+      "prompt": "Does 'Exact Soft Confidence-Weighted Learning' use publicly available datasets? And can the algorithm be reproduced on a normal laptop without needing a GPU or computing cluster?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the paper uses standard public text classification datasets (Reuters, 20 Newsgroups) and that SCW is an online algorithm that processes one sample at a time — making it extremely lightweight to run on any standard machine.",
+      "student_verification": "I checked the experimental section of the paper directly and confirmed the datasets are freely available and the algorithm has no heavy compute requirements.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 3,
+      "prompt": "Out of these 5 papers, which one would be the easiest for me to understand end-to-end and explain clearly in an exam?",
+      "why_important": "This was the most important decision — I needed a paper I could genuinely own and defend across all parts of the exam, not just submit blindly."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 4,
+      "prompt": "Can you confirm that 'Exact Soft Confidence-Weighted Learning' is published at ICML 2012 and qualifies as a methodological SVM paper?",
+      "why_important": "Ensured the paper satisfied the venue, year, and methodological constraints simultaneously before finalizing my selection."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 5,
+      "prompt": "Does this paper use publicly available datasets? Can it be reproduced on a normal laptop without a GPU?",
+      "why_important": "Reproducibility and compute feasibility are my own responsibility — I needed to confirm this before committing to the paper."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 2,
+      "prompt": "Can you give me the top 5 research papers from ICML, NeurIPS, AISTATS, or KDD between 2010 and 2012 that introduce a new classical method in SVM, GMM, or Time Series?",
+      "why_important": "Gave me a structured set of options to compare rather than searching blindly, saving time and helping me make a more informed final choice."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 1,
+      "prompt": "What exactly qualifies as a methodological contribution under the AML Part A constraints?",
+      "why_important": "Understanding this distinction upfront prevented me from accidentally selecting an application or benchmark paper that would violate the guidelines."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Part A. All LLM outputs were used partially and verified independently against the actual paper and exam guidelines. I understand the paper I have selected, and I take full responsibility for its reproducibility, dataset access, and explanation in subsequent exam parts.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-02"
+  }
+}
