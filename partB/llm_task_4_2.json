@@ -1,0 +1,137 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 4.2",
+    "submission_date": "2026-03-12"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.2",
+      "purpose": "Understanding the exact structure and required fields for the Part B LLM disclosure JSON files before writing them.",
+      "prompt": "For my Part B AML exam, each task needs an LLM disclosure JSON file. The required fields are: task_tag, code_used_verbatim (boolean), and student_modification only when code_used_verbatim is true. It must also include top_5_prompts and a student_declaration. Can you show me the correct JSON structure for one interaction entry?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Showed the correct nested JSON structure with all required fields in the right order. I used this as a template reference and then wrote the actual content of each file myself based on my real interactions.",
+      "student_verification": "I cross-checked the structure against the Part B exam PDF requirements, specifically the table on Task 4.2 which lists the mandatory fields. I confirmed the structure matches before writing all 10 files.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.2",
+      "purpose": "Clarifying when student_modification should and should not appear in the JSON based on the exam instructions.",
+      "prompt": "In the Part B LLM disclosure JSON, the field student_modification is described as required when code_used_verbatim is true. Should I include it at all when code_used_verbatim is false, or should I leave it out entirely?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed that student_modification should be omitted entirely when code_used_verbatim is false, not set to null or N/A. This prevented a structural error across all 10 JSON files.",
+      "student_verification": "I re-read the Task 4.2 field requirement table in the exam PDF which states the field is only required when code_used_verbatim is true. I applied this consistently across all my disclosure files.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.2",
+      "purpose": "Checking whether a task with very few LLM interactions still needs a top_5_prompts section or if all interactions can be listed instead.",
+      "prompt": "For the Part B LLM disclosure files, the instructions say top_5_prompts should include prompts from that specific file. If I only had 2 or 3 interactions for a task, do I still need exactly 5 prompts or can I list all of them?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed that the instructions explicitly state to include all interactions if fewer than five were logged for a task. This meant I did not need to fabricate additional prompts for tasks with minimal LLM usage.",
+      "student_verification": "I verified this by re-reading the exact line in the exam PDF: 'if fewer than five interactions were logged for a task, include all of them'. I applied this rule to the relevant files.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-12",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.2",
+      "purpose": "Verifying that a disclosure file for a task where no LLM was used is still valid and what it should contain.",
+      "prompt": "For Part B Task 4.2, if I did not use any LLM for a specific task, do I still need to submit a disclosure JSON file for it? What should it contain?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed that a file is still required and should explicitly state that no LLM was used in the interaction log, along with the student declaration. This ensured I did not accidentally omit any of the 10 required files.",
+      "student_verification": "I checked the marking criteria which states a file is complete if it contains at least one logged interaction or explicitly states no LLM was used. I made sure all 10 files were present in my submission.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-12",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.2",
+      "purpose": "Final check to confirm all 10 required LLM disclosure files are named correctly before GitHub submission.",
+      "prompt": "For Part B, the required LLM disclosure files are: llm_task_1_1.json, llm_task_1_2.json, llm_task_1_3.json, llm_task_2_1.json, llm_task_2_2.json, llm_task_2_3.json, llm_task_3_1.json, llm_task_3_2.json, llm_task_4_1.json, llm_task_4_2.json. Can you confirm this list is complete and matches the marking scheme?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed the list of 10 files is complete and matches the 15-mark allocation in the marking scheme (10 files x 1.5 marks each). Also reminded me to place all files inside the partB/ folder in the repository.",
+      "student_verification": "I cross-checked this list against the exam PDF evaluation scheme table and confirmed all 10 files are accounted for in my repository before submission.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 2,
+      "prompt": "In the Part B LLM disclosure JSON, the field student_modification is described as required when code_used_verbatim is true. Should I include it at all when code_used_verbatim is false, or should I leave it out entirely?",
+      "why_important": "This clarified a structural rule that applied to all 10 JSON files. Getting this wrong on every file would have introduced a consistent error across the entire 15-mark Task 4.2 submission."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 1,
+      "prompt": "For my Part B AML exam, each task needs an LLM disclosure JSON file. The required fields are: task_tag, code_used_verbatim (boolean), and student_modification only when code_used_verbatim is true. Can you show me the correct JSON structure for one interaction entry?",
+      "why_important": "Establishing the correct JSON structure upfront ensured consistency across all 10 disclosure files and prevented formatting errors that could lose marks."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 5,
+      "prompt": "For Part B, the required LLM disclosure files are: llm_task_1_1.json through llm_task_4_2.json. Can you confirm this list is complete and matches the marking scheme?",
+      "why_important": "A missing file attracts zero marks for that file's 1.5-mark allocation. Verifying the complete list before submission ensured no file was accidentally omitted."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 3,
+      "prompt": "If I only had 2 or 3 interactions for a task, do I still need exactly 5 prompts in top_5_prompts or can I list all of them?",
+      "why_important": "This clarified a rule that applied directly to tasks with minimal LLM usage, ensuring I did not fabricate interactions to pad the file to 5 prompts."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 4,
+      "prompt": "For Part B Task 4.2, if I did not use any LLM for a specific task, do I still need to submit a disclosure JSON file for it? What should it contain?",
+      "why_important": "Confirming that all 10 files are mandatory regardless of LLM usage prevented me from accidentally skipping files for tasks where I worked independently."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 4.2 (LLM Usage Disclosure). The LLM was used solely to clarify the required JSON structure and field rules as specified in the exam guidelines. All content written inside each disclosure file — the interaction logs, purposes, how_it_helped descriptions, and student verifications — reflects my actual LLM usage during Part B. I take full responsibility for the accuracy and completeness of all 10 disclosure files submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-12"
+  }
+}

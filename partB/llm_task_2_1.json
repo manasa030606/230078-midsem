@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 2.1",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.1",
+      "purpose": "Deciding the right amount of label noise to inject via flip_y to meaningfully exercise SCW's soft margin without making the problem too hard for a linear classifier.",
+      "prompt": "For a synthetic make_classification dataset used to test SCW, how much label noise (flip_y) is appropriate? I want enough noise to exercise the soft margin component of SCW but not so much that the dataset becomes fundamentally unlearnable by any linear classifier. What is a reasonable range?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that flip_y between 0.05 and 0.15 is the typical range for stress-testing soft margin classifiers — below 0.05 the noise is negligible and the soft margin is rarely activated, above 0.15 the Bayes error becomes too high for a linear classifier to achieve meaningful accuracy. Suggested 0.1 as a good middle ground.",
+      "student_verification": "I verified by generating datasets at flip_y=0.05, 0.1, and 0.15 in a scratch cell and checking the training accuracy of a simple logistic regression. At flip_y=0.1 the problem remained learnable (above 80% accuracy) while showing meaningful noise effects. I chose flip_y=0.1 based on this test, which matches what is in the notebook.",
+      "code_used_verbatim": false,
+      "student_modification": "I ran my own empirical test across flip_y values before settling on 0.1. The choice of flip_y=0.1 in the notebook is based on my own scratch test, not directly on the LLM's suggestion of 0.1. The LLM's range gave me the search space and I independently confirmed the value. The justification sentence 'where 10% of the labels are randomly flipped' in the notebook is my own phrasing.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.1",
+      "purpose": "Confirming that make_classification with 20 features and n_informative=15 is appropriate for demonstrating SCW's covariance tracking, given that the paper's datasets have many more features.",
+      "prompt": "The SCW paper uses datasets like USPS (256 features), w7a (300 features), and MNIST (784 features). I am using make_classification with only 20 features. Is 20 features enough to make the covariance matrix Sigma non-trivial and demonstrate confidence weighting, or should I use more features?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that 20 features is sufficient to demonstrate the covariance update and confidence weighting in a meaningful way — the key requirement is that features differ in their informativeness (which n_informative=15 ensures) so the covariance matrix evolves non-uniformly across dimensions. More features would make the demonstration richer but are not required for a toy reproduction.",
+      "student_verification": "I verified by inspecting the diagonal of the covariance matrix after 50 updates in a scratch run with n_features=20. The diagonal values were clearly non-uniform across features, confirming covariance tracking was working as expected even at 20 features.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the LLM's confirmation to proceed with 20 features and n_informative=15. The specific choice of n_informative=15 and n_redundant=2 was my own decision made to ensure a mix of informative, redundant, and uninformative features — this is my own parameter design, not suggested by the LLM. The notebook uses these exact values.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.1",
+      "purpose": "Understanding why the label conversion from {0,1} to {-1,+1} is necessary for SCW specifically.",
+      "prompt": "The SCW algorithm uses labels in {-1, +1}. sklearn's make_classification outputs {0, 1}. Is the conversion y = np.where(y == 0, -1, 1) necessary or can SCW handle {0, 1} labels? Why does it matter for the update rule specifically?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the conversion is strictly necessary. The SCW update rule uses y_t directly in the mean update mu_{t+1} = mu_t + alpha_t * y_t * Sigma_t * x_t — if y_t = 0 for the negative class, the update would zero out entirely for those examples, breaking the algorithm. The {-1, +1} encoding ensures the update direction flips correctly for both classes.",
+      "student_verification": "I verified by tracing through the update rule in Proposition 1 manually for a negative-class example with y_t=0 vs y_t=-1. With y_t=0 the mean update becomes zero regardless of alpha_t, which is clearly wrong. This confirmed the conversion is required.",
+      "code_used_verbatim": false,
+      "student_modification": "The conversion line y = np.where(y == 0, -1, 1) in the notebook is code I wrote myself based on my understanding of the algorithm — I already knew the SCW prediction rule uses sgn(mu . x) which requires {-1,+1} labels. I used this interaction to confirm my reasoning rather than to figure out what to do. The comment '# Convert labels from {0, 1} to {-1, 1} for margin-based algorithms' in the notebook is my own.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.1",
+      "purpose": "Checking whether fit_transform on train and transform-only on test is the correct StandardScaler usage pattern for an online learning setup.",
+      "prompt": "In my SCW notebook I am using StandardScaler with fit_transform on X_train and transform only on X_test. Is this the correct pattern? In an online learning context, should the scaler be fit on the full training set first, or should it be fit incrementally?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that fit on training set and transform-only on test is the standard correct pattern even for online learning experiments in an offline evaluation setup. Fitting incrementally would be more realistic for a true streaming scenario but is unnecessary for a controlled toy reproduction where the full training set is available.",
+      "student_verification": "I confirmed by checking that the paper's own experiments process datasets in a fixed random permutation rather than a true streaming setting, so fitting the scaler on the full training set is consistent with the paper's evaluation protocol.",
+      "code_used_verbatim": false,
+      "student_modification": "The scaler code structure in the notebook — fit_transform on X_train and transform on X_test — was written by me before this interaction. I used the interaction to verify the pattern was correct, not to learn how to write it. The comment '# Preprocessing: Standardize features to have zero mean and unit variance' is my own description.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.1",
+      "purpose": "Verifying that the limitations I wrote in the markdown cell accurately reflect the difference between my toy dataset and the paper's real-world datasets.",
+      "prompt": "I wrote these limitations for my Task 2.1 notebook: (1) smaller dataset than the paper's, (2) fewer features, (3) uniformly random noise rather than naturally occurring noise. Are these accurate and sufficient limitations for comparing make_classification to datasets like USPS, MNIST, and w7a used in the SCW paper?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed all three are accurate and suggested also noting that make_classification generates Gaussian clusters which are by construction approximately linearly separable, unlike real datasets which may have complex latent structure. This was an additional limitation I had not considered.",
+      "student_verification": "I verified by checking make_classification's sklearn documentation which confirms the Gaussian cluster structure. I then checked that the paper's real datasets (USPS digit images, w7a web data, codrna) have genuine complex feature interactions that synthetic Gaussian data cannot replicate.",
+      "code_used_verbatim": false,
+      "student_modification": "The limitations paragraph in the notebook was mostly written by me before this interaction. After the LLM pointed out the Gaussian cluster limitation, I incorporated it into the notebook in my own phrasing — the sentence 'its noise distribution is uniformly random rather than naturally occurring' is my own language. I also chose to frame the limitations around the phrase 'perfectly controlled environment' vs 'complex latent structures', which is my own editorial framing, not from the LLM response.",
+      "confidence_level": 4
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 3,
+      "prompt": "Is the conversion y = np.where(y == 0, -1, 1) necessary, or can SCW handle {0, 1} labels? Why does it matter for the update rule specifically?",
+      "why_important": "The label conversion is a correctness requirement, not just a convention. Understanding that y_t=0 would zero out the mean update entirely — breaking the algorithm for negative-class examples — confirmed this was a necessary step and allowed me to add a precise comment in the notebook explaining why it is done."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 1,
+      "prompt": "How much label noise (flip_y) is appropriate for stress-testing SCW's soft margin without making the problem unlearnable for a linear classifier?",
+      "why_important": "The flip_y value directly determines whether the soft margin component of SCW is meaningfully exercised. Choosing 0.1 based on my own empirical test, guided by the LLM's range of 0.05-0.15, ensured the noise level was purposeful and connected to the paper's contribution rather than arbitrary."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 5,
+      "prompt": "Are my three limitations — smaller dataset, fewer features, uniformly random noise — accurate and sufficient for comparing make_classification to the paper's USPS, MNIST, and w7a datasets?",
+      "why_important": "The rubric requires an honest limitations statement. The LLM flagged the Gaussian cluster separability limitation I had missed, which I incorporated in my own words. This made the limitations paragraph more complete and more directly tied to why my toy dataset underrepresents the challenge the paper addresses."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 2,
+      "prompt": "Is 20 features enough to make the covariance matrix non-trivial and demonstrate confidence weighting, or should I use more features?",
+      "why_important": "With the paper using 256-784 feature datasets, I needed to confirm 20 features was not so low as to make the covariance tracking trivial. Verifying this — and then confirming it empirically by inspecting the covariance diagonal — justified my feature count choice in the notebook."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 4,
+      "prompt": "Is fit_transform on X_train and transform-only on X_test the correct pattern for an online learning setup?",
+      "why_important": "Using the scaler incorrectly (e.g., fitting on test data) would introduce data leakage. Confirming the fit/transform split pattern was correct for the paper's offline evaluation protocol ensured the preprocessing was both methodologically sound and consistent with how the paper conducts its experiments."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 2.1 of Part B. All LLM outputs were used partially for verification and guidance only. No LLM-generated code was copied verbatim into the task notebook. All code in task_2_1.ipynb was written by me independently. The dataset justification and limitations analysis are written entirely in my own words. I take full responsibility for all parameter choices and content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

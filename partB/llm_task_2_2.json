@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 2.2",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.2",
+      "purpose": "Understanding how to compute phi = Phi^{-1}(eta) in Python and which scipy function corresponds to the inverse CDF of the normal distribution used in the paper.",
+      "prompt": "In the SCW paper, phi is defined as Phi^{-1}(eta), where Phi is the cumulative distribution function of the standard normal. What is the correct Python/scipy call to compute this? Is it norm.ppf or norm.isf?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that norm.ppf(eta) from scipy.stats is the correct call — ppf stands for percent point function which is the inverse CDF. norm.isf would give the inverse survival function (1 - CDF), which would be wrong.",
+      "student_verification": "I verified by checking that norm.ppf(0.9) returns approximately 1.28, which matches the commonly cited value of phi for eta=0.9 in confidence-weighted learning literature. This is used in the SCW1 constructor as self.phi = norm.ppf(eta).",
+      "code_used_verbatim": false,
+      "student_modification": "The import line 'from scipy.stats import norm' and the assignment 'self.phi = norm.ppf(eta)' in the constructor are my own code. I already knew I needed the inverse CDF — I used this interaction only to confirm norm.ppf was the right function rather than norm.isf. The decision to pre-compute phi, psi, and zeta once in __init__ rather than recomputing them per update was my own design choice for efficiency.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.2",
+      "purpose": "Verifying the alpha_t formula from Proposition 1 is transcribed correctly into Python, particularly the term under the square root.",
+      "prompt": "In Proposition 1 of the SCW paper, alpha_t = min{C, max{0, (1 / v_t * zeta) * (-m_t * psi + sqrt(m_t^2 * phi^4 / 4 + v_t * phi^2 * zeta))}}. I want to confirm the term under the square root is (m_t^2 * phi^4) / 4 + v_t * phi^2 * zeta, not (m_t^2 * phi^4 / 4 + v_t * phi^2) * zeta. Which grouping is correct?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the correct grouping is (m_t**2 * self.phi**4)/4 + v_t * self.phi**2 * self.zeta — zeta multiplies only the second term, not the whole expression. This matches the paper's Proposition 1 formula exactly.",
+      "student_verification": "I verified by re-reading Proposition 1 in the paper and tracing the formula term by term. The square root argument in the paper is written as sqrt(m_t^2 * phi^4 / 4 + v_t * phi^2 * zeta), confirming the correct grouping. My notebook uses exactly this: np.sqrt((m_t**2 * self.phi**4)/4 + v_t * self.phi**2 * self.zeta).",
+      "code_used_verbatim": false,
+      "student_modification": "The entire alpha_t computation line in the update method is my own code, written by transcribing Proposition 1 directly from the paper. I used this interaction only to resolve a grouping ambiguity I encountered while reading the formula — the rest of the alpha_t expression was already correctly written by me before this interaction.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-09",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.2",
+      "purpose": "Debugging a numerical issue where u_t occasionally went negative due to floating point errors, causing np.sqrt(u_t) to raise a warning.",
+      "prompt": "In my SCW-I implementation, u_t = 0.25 * (-alpha_t * v_t * phi + sqrt((alpha_t * v_t * phi)^2 + 4 * v_t))^2. Mathematically u_t should always be non-negative, but I am getting occasional negative values due to floating point precision. What is the safest way to handle this?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Suggested that the safest approach is to guard with 'if u_t < 0: return' to skip the update for that instance, since the occurrence is a numerical artifact rather than a meaningful case. Alternatively, np.maximum(u_t, 0) can be used but skipping is cleaner for an online learning loop.",
+      "student_verification": "I tested both approaches on my dataset and confirmed that the 'if u_t < 0: return' guard produces identical results to np.maximum(u_t, 0) on this dataset since the negative values are only on the order of -1e-15. I chose the explicit guard for clarity, which is what appears in the notebook.",
+      "code_used_verbatim": false,
+      "student_modification": "The guard 'if u_t < 0: return' in the update method is a direct result of this debugging interaction. However, the structure of the conditional — checking u_t after computing it and before computing beta_t — is my own code organisation. I also added a similar safety check in the beta_t denominator: 'if (np.sqrt(u_t) + v_t * alpha_t * self.phi) != 0 else 0', which I wrote independently to guard against division by zero and was not suggested by the LLM.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.2",
+      "purpose": "Understanding why the final online mistake rate of 0.2600 is higher than the paper's reported values and what accounts for the gap.",
+      "prompt": "My SCW-I implementation on a 1000-sample make_classification dataset with flip_y=0.1 gives a final online cumulative mistake rate of 0.2600 and a test accuracy of 0.7650. The paper reports mistake rates of 0.209 on svmguide3 and 0.229 on splice. Why is my rate higher? Is this a bug or expected?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that the gap is expected and not a bug. Three factors account for it: (1) my flip_y=0.1 noise is higher than the natural noise in the paper's real datasets; (2) the paper averages over 20 random permutations while I run one permutation, so my single-run mistake rate has higher variance; (3) the online cumulative mistake rate includes early high-error rounds before the model has learned, and a smaller dataset means those early rounds represent a larger fraction of the total.",
+      "student_verification": "I verified point (2) by running the same training loop with 5 different random seeds and observing that mistake rates ranged from 0.24 to 0.28, confirming high single-run variance. This is consistent with the paper's practice of averaging over 20 permutations.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the three factors as the framework for the result comparison markdown cell in my notebook. The written explanation of the gap is entirely in my own words and includes my own empirical finding from the 5-seed experiment, which was my own initiative. The specific observation about 'early high-error rounds representing a larger fraction in a smaller dataset' is my own reasoning, not from the LLM response.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.2",
+      "purpose": "Checking whether the fallback initialization block at the top of the training cell is the correct pattern for ensuring the notebook runs correctly from top to bottom in a clean environment.",
+      "prompt": "My task_2_2.ipynb uses data from task_2_1.ipynb. I added a fallback block: 'if X_train not in locals(): re-generate data'. Is this the correct approach for making the notebook self-contained, or should I just duplicate the full dataset generation at the top of task_2_2.ipynb?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that both approaches work but the fallback block is more readable and avoids repetition. However, noted that the reproducibility checklist requires the notebook to run from top to bottom in a clean environment — the fallback block satisfies this as long as the random seeds inside it match those in task_2_1.ipynb.",
+      "student_verification": "I verified by clearing all outputs and running task_2_2.ipynb in isolation. The fallback block triggered correctly and reproduced the exact same X_train and X_test as task_2_1.ipynb because I used the same random_state=42 and np.random.seed(42) in both.",
+      "code_used_verbatim": false,
+      "student_modification": "The fallback initialization block in the notebook is my own code, written before this interaction. I used the interaction only to confirm it was the right approach for the reproducibility requirement. The decision to use the same random_state=42 in both notebooks to ensure consistency was my own, as was the structure of the if-block which checks 'X_train not in locals()' — a Python pattern I already knew.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 2,
+      "prompt": "In Proposition 1, is the term under the square root (m_t^2 * phi^4) / 4 + v_t * phi^2 * zeta, or (m_t^2 * phi^4 / 4 + v_t * phi^2) * zeta? Which grouping is correct?",
+      "why_important": "A wrong grouping in the alpha_t formula would silently produce incorrect update coefficients without raising any error, making the algorithm appear to run correctly while computing wrong values. Confirming the exact grouping from Proposition 1 was the most critical correctness check in the entire implementation."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 3,
+      "prompt": "u_t should always be non-negative mathematically, but I am getting occasional negative values due to floating point precision. What is the safest way to handle this?",
+      "why_important": "This was a real debugging issue encountered during implementation. The 'if u_t < 0: return' guard in the update method is a direct result of this interaction and appears explicitly in the notebook code. Without it the notebook would raise numpy warnings and potentially NaN values during training."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 4,
+      "prompt": "My SCW-I gives a final online mistake rate of 0.2600 and test accuracy of 0.7650. The paper reports 0.209 on svmguide3. Why is my rate higher — is this a bug or expected?",
+      "why_important": "Task 2.3 requires an honest explanation of the gap between my result and the paper's reported values. Understanding the three factors (higher injected noise, single permutation vs 20-permutation average, smaller dataset) gave me a well-reasoned explanation rather than an unsupported disclaimer. I also independently verified factor (2) with a 5-seed experiment."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 1,
+      "prompt": "What is the correct Python/scipy call to compute phi = Phi^{-1}(eta) — is it norm.ppf or norm.isf?",
+      "why_important": "Using norm.isf instead of norm.ppf would compute 1 minus the intended confidence threshold, producing a wrong phi value and incorrect margins throughout the algorithm. Confirming the correct function before writing the constructor prevented this silent correctness error."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 5,
+      "prompt": "I added a fallback block 'if X_train not in locals(): re-generate data'. Is this the correct approach for making the notebook self-contained, or should I duplicate the full dataset generation?",
+      "why_important": "The reproducibility checklist requires the notebook to run from top to bottom in a clean environment. Confirming the fallback approach satisfies this requirement — and then verifying it myself by running the notebook in isolation — ensured the submission meets the reproducibility criteria without duplicating code unnecessarily."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 2.2 of Part B. All LLM outputs were used partially for debugging, verification, and clarification only. No LLM-generated code was copied verbatim into the task notebook. The SCW-I implementation, the online training loop, and all code in task_2_2.ipynb were written by me independently by transcribing the algorithm from Proposition 1 of the paper. I take full responsibility for the correctness and originality of all code and content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

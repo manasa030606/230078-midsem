@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 1.2",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-06",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.2",
+      "purpose": "Understanding why the Gaussian weight assumption is a specific architectural choice in SCW rather than a generic ML assumption.",
+      "prompt": "In the SCW paper (Wang et al., ICML 2012), the algorithm assumes the weight vector w follows a Gaussian distribution N(mu, Sigma). Why is this specifically an assumption embedded in the SCW contribution rather than a general ML assumption? What would break in the algorithm if the true weight distribution were multi-modal?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified that the Gaussian assumption is load-bearing because it enables the probability constraint to be rewritten as a closed-form deterministic margin inequality, which is the foundation for deriving the update rules in Propositions 1 and 2.",
+      "student_verification": "I verified by re-reading Section 3 where the paper states the Gaussian assumption and immediately uses it to rewrite the probability constraint as y_t(mu . x_t) >= phi * sqrt(x_t^T Sigma x_t). The derivation in the Appendix also depends entirely on this.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the LLM's explanation to understand the mechanism, then wrote the 'Why the method needs it' field entirely in my own words. I specifically chose to frame it around the closed-form margin rewriting rather than the generic Bayesian framing the LLM used, because the former is more directly traceable to Section 3 of the paper and more specific to SCW.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-06",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.2",
+      "purpose": "Constructing a realistic and specific violation scenario for the Gaussian weight assumption.",
+      "prompt": "For the Gaussian weight assumption in SCW, I want to write a violation scenario that is specific and realistic, not just 'data is non-Gaussian'. Can you suggest a real-world data setting where the optimal weight distribution would be genuinely multi-modal, making a single Gaussian a poor representation?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Suggested the case of disjoint sub-populations where the same features encode completely different decision boundaries for different groups, which would produce a multi-modal weight distribution that a single Gaussian cannot represent.",
+      "student_verification": "I independently verified this by reasoning through whether a single Gaussian mean could represent two opposing hyperplanes. It cannot — the mean would be pulled between the two modes and the covariance would be inflated incorrectly.",
+      "code_used_verbatim": false,
+      "student_modification": "I took the disjoint sub-population idea as inspiration but rewrote the violation scenario to use a concrete framing I could defend — highly disjoint sub-populations with completely different decision boundaries that cannot be captured by a single Gaussian mean. The phrasing, the logical reasoning, and the connection to the Gaussian mean being pulled between modes are all my own.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.2",
+      "purpose": "Confirming that fixed scalar C is genuinely an assumption embedded in the SCW method and not just a tuning hyperparameter.",
+      "prompt": "In SCW, the hyperparameter C controls the trade-off between passiveness and aggressiveness. Is it fair to call 'C being fixed across all time steps' an assumption embedded in the method's design? How does a fixed C limit the method compared to an adaptive C?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that fixed C is an embedded design assumption because the optimization in Eq. 4 and 5 is formulated with a single scalar C, implying the method assumes the noise level and update cost are stationary throughout the learning sequence.",
+      "student_verification": "I verified by checking that Algorithm 1 takes C as input and applies it uniformly in every update step with no mechanism to adapt it during learning.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the stationarity framing from the LLM response as the core of my 'Why the method needs it' explanation, but reworded it to emphasise the connection to the non-stationary violation scenario I had already planned (concept drift during financial market crashes). I also added the specific reference to Equations 4 and 5 myself after checking the paper, which was not part of the LLM response.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.2",
+      "purpose": "Verifying whether linearity is still a valid assumption to list given Section 4.2's kernel extension.",
+      "prompt": "The SCW paper includes a section on nonlinear kernel extension (Section 4.2, Lemma 1). Does this mean that 'linearity of the decision boundary' is NOT a core assumption of SCW? Or is it still valid to list since Algorithm 1 is linear?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified that linearity remains valid as a base assumption of the Algorithm 1 implementation, since the kernel extension in Section 4.2 requires the user to apply a transformation externally — it is not built into the algorithm itself.",
+      "student_verification": "I re-read Section 4.2 and confirmed the Representer Theorem result is a theoretical possibility, not an automatic feature of Algorithm 1. The base prediction rule sgn(mu . x_t) is strictly linear.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the LLM's clarification to resolve my uncertainty about including Assumption 3. I then wrote the assumption, the explanation, and the violation scenario entirely myself — the XOR and concentric circles violation scenario is my own example chosen to contrast directly with the linearity assumption, not suggested by the LLM.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.2",
+      "purpose": "Checking that my three assumptions are sufficiently distinct and each traces to a specific paper section before finalising.",
+      "prompt": "For Task 1.2, I have identified three assumptions: (1) Gaussian weight distribution, (2) fixed scalar C, (3) linear decision boundary. Are these genuinely distinct and traceable to specific design choices in the paper rather than generic ML assumptions?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed all three are distinct and each traces to a specific design element: (1) Section 3's Gaussian prior, (2) Eq. 4 and 5's fixed C, (3) the linear dot product in the prediction and loss function.",
+      "student_verification": "I independently verified each assumption against the rubric requirement that assumptions must be embedded in the proposed contribution rather than general ML assumptions. All three satisfy this.",
+      "code_used_verbatim": false,
+      "student_modification": "I used this interaction only as a final distinctness check, not to generate or revise any content. The three assumptions and all their written explanations were already finalised before this interaction. The only change I made after the check was adding the specific equation references (Eq. 4, Eq. 5, Section 2.1) to make the paper traceability explicit, which was my own editorial decision.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 1,
+      "prompt": "Why is the Gaussian weight assumption specifically an assumption embedded in the SCW contribution rather than a general ML assumption? What would break if the true weight distribution were multi-modal?",
+      "why_important": "The task rubric requires assumptions traceable to the paper's contribution, not generic ones. Understanding exactly why the Gaussian assumption is load-bearing for the closed-form derivation was essential for writing a specific and defensible explanation."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 4,
+      "prompt": "The SCW paper includes a kernel extension in Section 4.2. Does this mean linearity is NOT a core assumption? Or is it still valid since Algorithm 1 is linear?",
+      "why_important": "This resolved a genuine ambiguity before committing to Assumption 3. Including an assumption that the paper explicitly relaxes could have been penalised in Part C. Confirming linearity applies to Algorithm 1 specifically gave me confidence to include it."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 3,
+      "prompt": "Is it fair to call 'C being fixed across all time steps' an assumption embedded in the method's design rather than just a tuning hyperparameter?",
+      "why_important": "I was unsure whether a hyperparameter qualifies as an assumption under the rubric. Confirming that fixed C implies a stationarity assumption baked into the optimization formulation made this assumption specific and defensible."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 2,
+      "prompt": "Can you suggest a real-world data setting where the optimal weight distribution would be genuinely multi-modal, making a single Gaussian a poor representation?",
+      "why_important": "The rubric requires a concrete violation scenario, not a vague one. Using the LLM to spark an idea that I then verified and rewrote in my own words produced a more specific and defensible scenario than I would have stated generically."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 5,
+      "prompt": "Are my three assumptions genuinely distinct and traceable to specific design choices rather than generic ML assumptions?",
+      "why_important": "A final distinctness check before submission ensured no overlapping or un-traceable assumptions were submitted, which could have lost marks or been challenged in Part C."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 1.2 of Part B. All LLM outputs were used partially for comprehension and verification only. No LLM-generated text was copied verbatim into the task notebook. All three assumptions and their explanations in task_1_2.ipynb are written entirely in my own words based on my direct reading of the SCW paper. I take full responsibility for the accuracy and originality of all content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

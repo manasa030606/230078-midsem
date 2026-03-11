@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 1.1",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-06",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.1",
+      "purpose": "Understanding the initialization step of SCW and why the covariance is set to identity matrix rather than zero.",
+      "prompt": "In the SCW paper (Wang et al., ICML 2012), the algorithm initializes the covariance matrix as Sigma_0 = I (identity). Why is the identity matrix chosen specifically rather than a zero matrix or a diagonal matrix with other values? What does this imply about the prior confidence over weights?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified that initializing Sigma_0 = I represents maximum and equal uncertainty over all weight dimensions, which is the standard uninformative prior in Bayesian online learning. Also explained that a zero covariance would be degenerate and non-invertible, making identity the natural isotropic starting point before any data is seen.",
+      "student_verification": "I verified by re-reading the INITIALIZATION line in Algorithm 1 and cross-referencing with the CW paper (Dredze et al., 2008) which uses the same convention. The explanation matched my reading of Section 3.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the LLM's explanation as background understanding to inform my own wording in Step 1. I rewrote the purpose statement entirely in my own words, directly referencing Algorithm 1 and connecting the identity initialization to the absence of prior knowledge. The phrase about establishing an uninformative prior before observing any data is my own framing, not lifted from the LLM response.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-06",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.1",
+      "purpose": "Clarifying how the soft confidence-weighted loss differs structurally from the standard hinge loss used in PA algorithms.",
+      "prompt": "In the SCW paper, the loss function is defined as: l_phi(N(mu, Sigma); (x_t, y_t)) = max(0, phi * sqrt(x_t^T Sigma x_t) - y_t * mu * x_t). How is this different from the standard hinge loss used in Passive-Aggressive algorithms? What does the phi * sqrt(x_t^T Sigma x_t) term represent intuitively?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that the standard PA hinge loss uses a fixed margin of 1, while the SCW loss uses an adaptive margin depending on the current prediction variance. The term phi * sqrt(x_t^T Sigma x_t) scales the required margin by the model's uncertainty, tightening it when confident and widening it when uncertain.",
+      "student_verification": "I confirmed by comparing Equation (1) for PA in Section 2.2 with the SCW loss definition in Section 3. The structural difference is explicit in the equations.",
+      "code_used_verbatim": false,
+      "student_modification": "I took the adaptive margin intuition from the LLM response and re-expressed it in my own language for Step 3, explicitly citing the equation from Section 3. I independently added the explanation of what zero loss means (no update needed) by reading Algorithm 1 myself — this was not in the LLM response and is my own contribution to the step description.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.1",
+      "purpose": "Understanding the role of the beta_t coefficient in the covariance update and why it shrinks the covariance along the direction of x_t.",
+      "prompt": "In SCW, the covariance update is: Sigma_{t+1} = Sigma_t - beta_t * Sigma_t * x_t * x_t^T * Sigma_t. Why does this formula reduce the covariance specifically in the direction of x_t and not uniformly across all dimensions? What does beta_t control?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that the rank-1 update concentrates variance reduction along the feature direction most relevant for predicting x_t, and that beta_t controls the magnitude of this reduction — distinguishing second-order from first-order methods.",
+      "student_verification": "I verified by reading Proposition 1 in Section 3 and manually tracing through the covariance update for a 2D example to confirm the directional effect.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the rank-1 projection explanation as conceptual background only. I wrote Step 4 from scratch based on my own 2D manual trace. The purpose statement about narrowing confidence precisely along the x_t direction without affecting orthogonal dimensions is my own phrasing derived from the trace, not from the LLM response.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.1",
+      "purpose": "Understanding the structural difference between SCW-I and SCW-II and when one is preferred over the other.",
+      "prompt": "The SCW paper proposes two variants: SCW-I (linear penalty, Eq. 4) and SCW-II (squared penalty, Eq. 5). What is the practical difference in their update behaviour? Under what conditions would SCW-II be preferable to SCW-I?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified that SCW-I clips alpha_t at C making it conservative, while SCW-II uses a squared penalty leading to smoother learning and fewer total updates as seen in Table 3.",
+      "student_verification": "I verified by comparing Propositions 1 and 2 directly and checking the update count columns in Table 3.",
+      "code_used_verbatim": false,
+      "student_modification": "I used this comparison to decide how to present the fork in Step 4 of my method description. The framing of the fork as a design choice between conservative clipping (SCW-I) versus quadratic smoothing (SCW-II), and the specific references to Proposition 1 and 2, are my own editorial choices. I did not copy the LLM's comparative framing directly.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.1",
+      "purpose": "Verifying the factual accuracy of my self-written final summary sentence before submission.",
+      "prompt": "Can you check if my draft summary sentence is accurate: 'This paper solves the problem of online confidence-weighted classifiers overfitting on noisy or non-separable datasets due to their overly aggressive weight updates; the authors claim their approach is better than existing alternatives because it is the first second-order online learning method to possess all four salient properties together: large margin training, confidence weighting, adaptive margin, and the capability to gracefully handle non-separable data through a soft-margin formulation.'",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed factual accuracy against the abstract and Table 1 and suggested minor phrasing refinements for clarity.",
+      "student_verification": "I cross-checked the four salient properties against Table 1 (Section 4.1) and the abstract independently before accepting the confirmation.",
+      "code_used_verbatim": false,
+      "student_modification": "The summary sentence was written entirely by me first, then submitted to the LLM only for fact-checking. I rejected the LLM's phrasing suggestions and kept my own wording, making only one self-initiated change — replacing 'overfitting' with 'performing poorly' to more accurately reflect how the paper characterises the problem. This edit was my own decision, not the LLM's suggestion.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 2,
+      "prompt": "In the SCW paper, the loss function is defined as: l_phi(N(mu, Sigma); (x_t, y_t)) = max(0, phi * sqrt(x_t^T Sigma x_t) - y_t * mu * x_t). How is this different from the standard hinge loss used in Passive-Aggressive algorithms? What does the phi * sqrt(x_t^T Sigma x_t) term represent intuitively?",
+      "why_important": "The adaptive loss is the core innovation of SCW. Understanding it precisely was essential for Step 3 of the method description and for correctly distinguishing SCW's adaptive margin from the fixed margin in PA."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 3,
+      "prompt": "In SCW, the covariance update is Sigma_{t+1} = Sigma_t - beta_t * Sigma_t * x_t * x_t^T * Sigma_t. Why does this formula reduce the covariance specifically in the direction of x_t? What does beta_t control?",
+      "why_important": "The directional covariance reduction is what makes SCW a second-order method. Writing Step 4 correctly required understanding the rank-1 projection structure, not just restating the formula."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 4,
+      "prompt": "The SCW paper proposes two variants: SCW-I (linear penalty) and SCW-II (squared penalty). What is the practical difference in their update behaviour?",
+      "why_important": "Step 4 forks based on variant choice. Understanding the practical implication of each penalty type was needed to describe this step accurately and to choose which variant to implement in Task 2.2."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 1,
+      "prompt": "The algorithm initializes the covariance matrix as Sigma_0 = I. Why is the identity matrix chosen specifically? What does this imply about the prior confidence over weights?",
+      "why_important": "Step 1 required a purpose statement, not just a restatement of the initialization. Understanding the Bayesian prior interpretation allowed me to explain why this choice makes sense before any data is observed."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 5,
+      "prompt": "Can you check if my draft summary sentence is accurate: 'This paper solves the problem of online confidence-weighted classifiers overfitting on noisy or non-separable datasets...'",
+      "why_important": "The final summary sentence is required by the rubric and must be factually precise. Using the LLM only to verify — not generate — ensured the sentence remained my own while confirming it correctly represented the paper's claims."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 1.1 of Part B. All LLM outputs were used partially for comprehension and verification only. No LLM-generated text was copied verbatim into the task notebook. All content in task_1_1.ipynb is written in my own words based on my direct reading of the SCW paper. I take full responsibility for the accuracy and originality of all content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

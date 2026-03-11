@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 3.1",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.1",
+      "purpose": "Confirming the correct way to ablate the soft margin component of SCW-I, specifically whether setting C to a very large value (e.g., 1e15) is the right approach to make the algorithm behave like the original CW learner.",
+      "prompt": "To ablate the soft margin component in SCW-I, I want to remove the effect of the C hyperparameter. My plan is to set C to an extremely large value like 1e15 so that the min(C, ...) cap on alpha_t is never triggered. Would this correctly replicate the behavior of the original CW algorithm, or is there a more principled way to remove the soft margin constraint?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that setting C to 1e15 is the standard and correct approach for ablating the soft margin component. Explained that when C approaches infinity, the min(C, alpha_t) cap is never active, so every update is made as aggressively as the margin loss dictates — which is equivalent to the original CW hard-constraint update rule. This validated the approach taken in the notebook.",
+      "student_verification": "I verified by re-reading Propositions 1 and 2 in the paper. The alpha_t formula includes a min(C, ...) term; when C is unbounded, the constraint is removed. I also confirmed by inspecting the update magnitudes in my implementation: with C=1e15, alpha_t is never clipped. The notebook uses C=1e15 with the label 'Ablated SCW (C=inf -> CW)', which directly reflects this reasoning.",
+      "code_used_verbatim": false,
+      "student_modification": "The decision to use C=1e15 as the ablation value, and the label 'C=inf -> CW' in the plot legend, are both my own design choices. The LLM only confirmed that this approach is principled. All code in the SCW1 class and the run_online_learning helper function was written by me independently, transcribed from Proposition 1 of the paper.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.1",
+      "purpose": "Confirming the correct way to ablate the confidence-weighted covariance tracking component — specifically, whether fixing Sigma to Identity throughout training is the right way to remove confidence weighting.",
+      "prompt": "For Ablation 2 I want to remove the confidence-weighted covariance tracking from SCW-I. My plan is to keep Sigma as an implicit Identity matrix — meaning I compute v_t as dot(x, x) instead of dot(x, Sigma @ x), and I update mu with alpha_t * y * x instead of alpha_t * y * Sigma @ x. I also skip all Sigma updates. Is this the correct ablation of the confidence-weighted property?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that this is the correct way to ablate the confidence-weighted component. Explained that by keeping Sigma as an implicit Identity matrix, v_t reduces to the squared L2 norm of x, and the mean update becomes a simple scaled gradient step — equivalent to a first-order Soft Margin Passive-Aggressive (PA-I) learner. This is exactly what the 'Confidence' property in Table 1 of the paper contributes.",
+      "student_verification": "I verified by reading the SCW update equations in the paper. With Sigma = I, the expression dot(x, Sigma @ x) simplifies to dot(x, x), and Sigma @ x simplifies to x. My AblatedSCW_NoSigma class in the notebook implements precisely this: v_t = np.dot(x, x) and self.mu = self.mu + alpha_t * y * x. The code comment 'Covariance updates to Sigma are ignored. Mean update uses Identity instead of Sigma * x -> x alone' is my own annotation added after this confirmation.",
+      "code_used_verbatim": false,
+      "student_modification": "The AblatedSCW_NoSigma class is entirely written by me. The LLM only confirmed that the ablation approach is mathematically correct. The class name, structure, comments, and integration into the run_online_learning helper are all my own choices. The interpretation that this reduces to 'a first-order Soft-Margin Passive-Aggressive (PA-I) scheme with a fixed non-adaptive margin' in the markdown cell is also my own phrasing, derived independently after the interaction.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.1",
+      "purpose": "Verifying the interpretation of the Ablation 1 result — specifically, whether the expected behavior of the ablated variant (higher mistake rate on noisy data) is consistent with the paper's claims about the soft margin component.",
+      "prompt": "In my Ablation 1 result, the model with C=1e15 (simulating the original CW without soft margin) makes more mistakes than the full SCW-I with C=1.0 on noisy data. Is this the expected direction, and does the paper explain why aggressive updates cause higher error on noisy data?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed this is the expected direction. Explained that without the soft margin slack, the algorithm is forced to satisfy the confidence-weighted margin on every noisy or mislabeled instance, causing extreme parameter updates that corrupt previously learned weights. This matches the paper's motivation for introducing the soft margin: C bounds update aggressiveness, preventing catastrophic parameter drift on non-separable or noisy data.",
+      "student_verification": "I verified by re-reading Section 3 of the paper, which explicitly motivates the soft margin as a mechanism to handle non-separable data by allowing some margin violations rather than forcing aggressive updates. The notebook interpretation states: 'bounding the magnitude of updates via a slack C is strictly necessary to prevent catastrophic parameter-drift on noisy subsets' — this phrasing is my own, written after confirming the direction with this interaction.",
+      "code_used_verbatim": false,
+      "student_modification": "The full interpretation paragraph in the 'Interpretation of Ablation 1' markdown cell is written entirely by me. The phrase 'catastrophic parameter-drift on noisy subsets' and the statement 'This matched my exact expectation from reading the paper' are both my own. The LLM confirmed the directional expectation; I wrote the explanation from scratch.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.1",
+      "purpose": "Verifying the interpretation of the Ablation 2 result — specifically, whether the expected behavior of the ablated variant (higher and less stable mistake rate without Sigma) is consistent with the paper's description of the confidence-weighted property.",
+      "prompt": "In my Ablation 2 result, the model without covariance tracking (Sigma fixed to Identity) has a mildly but noticeably higher and less stable mistake rate compared to full SCW-I. Is this the expected direction, and how does the paper describe what the confidence-weighted covariance tracking actually contributes to learning?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the expected direction. Explained that the covariance matrix Sigma tracks per-dimension confidence: dimensions with high uncertainty (rarely seen features) receive larger updates, while dimensions with high confidence (frequently seen features) receive smaller updates. Without Sigma, all dimensions are treated equally regardless of how much has been learned about them, leading to more oscillation and slower convergence.",
+      "student_verification": "I verified by re-reading the paper's description of confidence weighting in Section 2. The notebook interpretation states: 'maintaining independent Gaussian variance metrics permits large updates for rare features but limits massive destructive oscillations for well-established standard features, creating significantly faster and stabler convergence than simple first-order Perceptron/PA-like learning.' This is my own phrasing written after this interaction.",
+      "code_used_verbatim": false,
+      "student_modification": "The full interpretation paragraph in the 'Interpretation of Ablation 2' markdown cell is written entirely by me. The LLM confirmed the directional expectation and the mechanism. The specific characterization of 'rare features vs well-established standard features' and the comparison to 'simple first-order Perceptron/PA-like learning' are my own analytical formulations.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.1",
+      "purpose": "Checking whether the two ablations chosen (soft margin removal and covariance tracking removal) together isolate two genuinely distinct SCW properties, or whether there is overlap between what they ablate.",
+      "prompt": "I am ablating two components of SCW-I: (1) soft margin by setting C=inf, and (2) confidence-weighted covariance by fixing Sigma=I. Do these two ablations target genuinely distinct properties of the SCW algorithm, or do they interact in a way that makes the results harder to interpret?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that the two ablations target genuinely distinct properties. Soft margin (C) controls update aggressiveness on loss magnitude, while covariance tracking (Sigma) controls update direction and scale per-dimension based on historical confidence. They are mathematically independent in the SCW update equations, so each ablation cleanly isolates one property.",
+      "student_verification": "I verified by inspecting the update equations in Proposition 1. alpha_t is determined by C and the loss, while Sigma appears only in the mean and covariance update steps. Changing C does not affect how Sigma is used, and removing Sigma does not affect how C bounds alpha_t. The two ablations are therefore orthogonal. This confirmed my design choice to run them as separate experiments rather than a combined ablation.",
+      "code_used_verbatim": false,
+      "student_modification": "The decision to present the two ablations as separate experiments and the framing of each ablation as targeting a distinct property are entirely my own design choices. The notebook structure — separate code cells, separate plots, separate interpretation paragraphs — was designed by me before this interaction. The LLM only confirmed that the two properties are mathematically independent.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 1,
+      "prompt": "To ablate the soft margin component in SCW-I, I want to set C to an extremely large value like 1e15 so that the min(C, ...) cap on alpha_t is never triggered. Would this correctly replicate the behavior of the original CW algorithm?",
+      "why_important": "This validated the core design of Ablation 1. If setting C=1e15 were not a valid ablation, the entire first ablation would be methodologically flawed. Confirming this allowed me to proceed with confidence that the experiment is correctly structured and that the comparison to 'Ablated SCW (C=inf -> CW)' in the plot legend is accurate."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 2,
+      "prompt": "For Ablation 2 I want to remove the confidence-weighted covariance tracking from SCW-I. My plan is to keep Sigma as an implicit Identity matrix — computing v_t as dot(x, x) and updating mu with alpha_t * y * x. Is this the correct ablation of the confidence-weighted property?",
+      "why_important": "This validated the core design of Ablation 2. The AblatedSCW_NoSigma class depends entirely on this ablation being mathematically correct. Confirming that Sigma=I reduces the algorithm to a first-order PA-I learner grounded the interpretation and ensured the ablation is principled rather than ad hoc."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 5,
+      "prompt": "Do the two ablations (soft margin C=inf and Sigma=I) target genuinely distinct properties of SCW, or do they interact in a way that makes results harder to interpret?",
+      "why_important": "This confirmed that the two ablations are orthogonal and can be run as separate experiments without confounding. Without this confirmation, there would be ambiguity about whether the two results are measuring overlapping effects."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 3,
+      "prompt": "In Ablation 1, the model with C=1e15 makes more mistakes than SCW-I with C=1.0 on noisy data. Is this the expected direction, and does the paper explain why aggressive updates cause higher error on noisy data?",
+      "why_important": "This confirmed that the Ablation 1 result is in the expected direction and is consistent with the paper's claims. Without this confirmation, I would not have been able to write a confident interpretation paragraph connecting the result to the paper's theoretical motivation."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 4,
+      "prompt": "In Ablation 2, the model without covariance tracking has a mildly but noticeably higher and less stable mistake rate. Is this the expected direction, and how does the paper describe what covariance tracking contributes?",
+      "why_important": "This confirmed the Ablation 2 result is in the expected direction and grounded the interpretation in the paper's description of the confidence-weighted property. The resulting interpretation paragraph directly connects the observed behavior to the paper's claim about per-dimension uncertainty tracking."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 3.1 of Part B. All LLM interactions were used for verification and confirmation of ablation design and result interpretation only. No LLM-generated code was used. The SCW1 class, AblatedSCW_NoSigma class, run_online_learning helper, all plot code, and all interpretation paragraphs in task_3_1.ipynb are written entirely in my own words and code. I take full responsibility for the correctness and originality of all content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

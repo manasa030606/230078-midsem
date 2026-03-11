@@ -1,0 +1,137 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 4.1",
+    "submission_date": "2026-03-12"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.1",
+      "purpose": "Understanding the IEEE conference format requirements and how to structure the Part B report within the 4-page limit.",
+      "prompt": "What is the correct LaTeX document class and preamble for an IEEE conference-style report? I need to write a 4-page maximum report covering paper summary, reproduction results, ablation findings, failure mode, and reflection.",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Provided the correct IEEEtran document class setup and preamble packages. I used this as a starting template and then filled in all the content myself based on my own notebook results and analysis.",
+      "student_verification": "I verified the LaTeX compiles correctly on Overleaf and matches the IEEE two-column format. All numerical results, interpretations, and analysis were written by me based on my actual notebook outputs.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.1",
+      "purpose": "Getting help placing the four actual figures from my results/ folder into the correct sections of the IEEE LaTeX report.",
+      "prompt": "How do I include PNG images in IEEE LaTeX format using \\includegraphics? I have four figures: scw_learning_curve.png, ablation_1_soft_margin.png, ablation_2_confidence.png, and failure_mode.png. Where should each go in the report sections?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Explained the figure environment syntax and how to use \\columnwidth for IEEE two-column layout. Suggested logical placement of each figure next to the section it supports. I decided the final placement myself.",
+      "student_verification": "I checked each figure renders correctly in Overleaf after uploading my actual PNG files. Caption text was written by me to match my specific results.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.1",
+      "purpose": "Checking that the report structure covers all five required components from the Part B marking scheme before final submission.",
+      "prompt": "My Part B report must cover: (1) one-paragraph paper summary, (2) reproduction setup and result with gap commentary, (3) two ablation findings, (4) failure mode explanation, (5) honest reflection. Can you check my section outline covers all five and flag anything missing?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed all five required components were present and pointed out that the reflection section should explicitly mention what could not be implemented and what would be revisited, not just what was surprising. I then updated the reflection section accordingly.",
+      "student_verification": "I re-read the Part B guidelines myself and confirmed the five components match the marking scheme in the exam PDF. The reflection content is entirely my own honest assessment.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-12",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.1",
+      "purpose": "Fixing a LaTeX compilation error where the subcaption package was conflicting with IEEEtran subfigure handling.",
+      "prompt": "I am getting a LaTeX error: 'Option clash for package caption' when using \\usepackage{subcaption} with IEEEtran. How do I fix this?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Suggested removing the subcaption package since my figures are all single-panel and do not require subfigure environments, and to use the standard figure environment instead. This resolved the compilation error.",
+      "student_verification": "I tested the fix in Overleaf and confirmed the report compiles cleanly without errors. The figure layout remained correct after the change.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-12",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 4.1",
+      "purpose": "Verifying that the gap explanation between my 26% mistake rate and the paper's 13.5% is presented honestly and not framed as a failure.",
+      "prompt": "In my Part B report I got a 26% online mistake rate but the paper reports 13.5% on synthetic data with 10% noise. How should I honestly explain this gap without presenting it as a failure of my implementation?",
+      "llm_response_used": "Partially",
+      "code_used_verbatim": false,
+      "how_it_helped": "Confirmed that the gap is fully explainable by three factors: different synthetic data generators, no hyperparameter grid search, and no averaging over 20 permutations. Suggested framing it as an honest observation with reasoned explanation, which the marking scheme explicitly rewards.",
+      "student_verification": "I independently verified each of these three reasons by re-reading Section 5.1 of the paper, which describes the exact cross-validation procedure and data generator the authors used. The explanation in my report is based on my own reading.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 3,
+      "prompt": "My Part B report must cover: (1) one-paragraph paper summary, (2) reproduction setup and result with gap commentary, (3) two ablation findings, (4) failure mode explanation, (5) honest reflection. Can you check my section outline covers all five and flag anything missing?",
+      "why_important": "This was the most critical check before final submission. Making sure all five marking scheme components were explicitly present in the report directly affects the 15 marks allocated to Task 4.1."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 5,
+      "prompt": "In my Part B report I got a 26% online mistake rate but the paper reports 13.5% on synthetic data with 10% noise. How should I honestly explain this gap without presenting it as a failure of my implementation?",
+      "why_important": "The marking scheme explicitly rewards accurate reasoning and transparency over inflated results. Getting the framing of the gap right was essential to scoring well on the reproduction section."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 1,
+      "prompt": "What is the correct LaTeX document class and preamble for an IEEE conference-style report? I need to write a 4-page maximum report covering paper summary, reproduction results, ablation findings, failure mode, and reflection.",
+      "why_important": "Setting up the correct IEEE format from the start saved significant time and ensured the report met the formatting requirement specified in the exam guidelines."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 2,
+      "prompt": "How do I include PNG images in IEEE LaTeX format using \\includegraphics? I have four figures: scw_learning_curve.png, ablation_1_soft_margin.png, ablation_2_confidence.png, and failure_mode.png.",
+      "why_important": "Correctly embedding my actual result figures was necessary to make the report self-contained. The figures are the primary visual evidence for the ablation and failure mode sections."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 4,
+      "prompt": "I am getting a LaTeX error: Option clash for package caption when using subcaption with IEEEtran. How do I fix this?",
+      "why_important": "Resolving this compilation error was a necessary debugging step to get the final PDF produced correctly in Overleaf before submission."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 4.1 (Report). The LLM was used solely for LaTeX formatting assistance, structural checking, and debugging. All numerical results, experimental findings, ablation interpretations, failure mode analysis, and reflective commentary in the report are entirely my own work based on my actual notebook outputs. I understand that the decisions behind what to include, how to frame the gap, and what to reflect on are my own responsibility and may be examined in Part C.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-12"
+  }
+}

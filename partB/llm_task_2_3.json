@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 2.3",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.3",
+      "purpose": "Understanding what exact result from the paper I should compare my implementation against, since Table 3 contains multiple datasets and metrics.",
+      "prompt": "The SCW paper Table 3 reports mistake rates for multiple datasets: splice (0.229), svmguide3 (0.209), a synthetic dataset (0.135), and others. My dataset is a synthetic sklearn make_classification with 10% label noise. Which result from Table 3 is the most appropriate to compare against?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Advised that the paper's synthetic dataset result (0.135 / 13.5%) is the most appropriate benchmark since it also uses a controlled synthetic dataset with 10% noise. The real-world datasets like splice and svmguide3 have different feature structures, sample sizes, and natural noise profiles that make them less directly comparable.",
+      "student_verification": "I verified by re-reading Table 3 in the paper. The synthetic dataset entry is listed as having 10% label noise, matching my flip_y=0.1 setup. I confirmed that the paper's synthetic dataset value of 13.5% mistake rate is the right reference point. My notebook cites this explicitly: 'The paper reports SCW-I achieves an online mistake rate of 13.5% on their specific synthetic dataset with 10% noise (Table 3).'",
+      "code_used_verbatim": false,
+      "student_modification": "The comparison framing and the choice to cite Table 3's synthetic dataset result is my own decision, confirmed by this interaction. The actual sentence 'The paper reports SCW-I achieves an online mistake rate of 13.5% on their specific synthetic dataset with 10% noise (Table 3)' is written entirely by me. The LLM only confirmed which table entry to use.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.3",
+      "purpose": "Identifying the strongest explanation for the gap between my 26% mistake rate and the paper's 13.5%, specifically to check whether my implementation might be wrong or whether the gap is expected.",
+      "prompt": "My SCW-I gets 26% mistake rate on a synthetic dataset with 10% label noise. The paper gets 13.5% on their synthetic dataset with 10% noise. Is this gap a sign of a bug, or can it be fully explained by dataset and hyperparameter differences?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the gap is expected and not a bug. Identified three key factors: (1) sklearn make_classification generates Gaussian cluster data that may be harder to separate linearly than the paper's proprietary synthetic data; (2) the paper used exhaustive cross-validation over C in {2^-4, ..., 2^4} while I used C=1.0 arbitrarily; (3) 10% label noise sets a hard floor on training-stream mistake rate, and 26% on a harder dataset is still functional learning well above chance.",
+      "student_verification": "I cross-checked factor (2) by re-reading Section 4.1 of the paper, which explicitly states that C was chosen from {2^-4, ..., 2^4} via cross-validation. I confirmed that my notebook reproduces all three factors in the explanation: the dataset hyperparameter difference, the untuned C, and the noise floor argument.",
+      "code_used_verbatim": false,
+      "student_modification": "The three-factor structure of the gap explanation in my notebook is informed by this interaction, but every sentence is written in my own words. Specifically, the phrase 'my sklearn synthetic dataset likely separates the classes less linearly or with harder local boundaries than the proprietary dataset generated in the paper' is my own phrasing. The note that 'a 26% error rate on a tough validation dataset implies functional learning above chance' is also entirely my own conclusion. The LLM provided the framework; I wrote the explanation.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.3",
+      "purpose": "Deciding what to plot for the result visualization — whether to plot cumulative mistake rate over time or a bar chart of final values.",
+      "prompt": "For the result visualization in Task 2.3, should I plot the online cumulative mistake rate over the training stream (decreasing curve), or just a bar chart comparing my final mistake rate vs the paper's? Which better demonstrates the online learning behavior?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Recommended plotting the online cumulative mistake rate over the training stream as a line curve, because it directly demonstrates the online learning dynamic — the model starts with high error and improves as it sees more instances, which is the central claim of online learning algorithms like SCW. A bar chart would only show the final number without capturing the learning trajectory.",
+      "student_verification": "I agreed with this reasoning and implemented a line plot of mistake_rates vs number of instances seen. The plot code is entirely mine: 'plt.plot(mistake_rates, label=\"SCW-I\", color=\"blue\", linewidth=2)' with appropriate axis labels and title. The plot is saved to results/scw_learning_curve.png.",
+      "code_used_verbatim": false,
+      "student_modification": "The decision to use a line plot for the learning curve was guided by this interaction. However, all plot code — including the figsize, axis labels ('Number of instances seen', 'Online Average Mistake Rate'), title, grid styling (linestyle='--', alpha=0.7), color choice, and save path — is written entirely by me. The fallback dummy data block for running out-of-order is also entirely my own addition.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.3",
+      "purpose": "Verifying that my reproducibility checklist covers the key requirements expected in a machine learning reproducibility checklist.",
+      "prompt": "I have a reproducibility checklist with these items: (1) random seeds set and documented, (2) dependencies listed in requirements.txt, (3) notebooks run top to bottom without errors, (4) dataset loading requires no undocumented manual steps, (5) hyperparameters clearly named and defined in one place. Am I missing any standard reproducibility items for an online learning experiment?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed these five items are standard and sufficient for a controlled synthetic experiment. Mentioned that a common additional item is documenting hardware/OS environment, but noted this is typically only critical for GPU-dependent experiments. Also noted that for online learning specifically, documenting the data ordering (shuffling) is important — my use of random_state=42 in train_test_split covers this.",
+      "student_verification": "I confirmed that data ordering is covered by my random_state=42 and np.random.seed(42) documentation already present in task_2_1.ipynb and the fallback block in task_2_2.ipynb. I kept my five-item checklist as-is since the hardware note is not relevant for a CPU-only sklearn experiment.",
+      "code_used_verbatim": false,
+      "student_modification": "All five checklist items in the notebook are written entirely by me, including the specific wording 'All hyperparameters (C, eta) are clearly named and defined in one place (class definition/instantiation) rather than scattered across cells.' The LLM only confirmed completeness. The decision to omit the hardware item was my own judgment call.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 2.3",
+      "purpose": "Checking whether the hold-out test accuracy of 76.5% is consistent with a 26% online mistake rate, or whether the discrepancy indicates a problem.",
+      "prompt": "My SCW-I model has a final online cumulative mistake rate of 26% on the training stream but a hold-out test accuracy of 76.5% (23.5% mistake rate on test). Is this relationship between training stream mistake rate and test accuracy expected for an online learner?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that the discrepancy is expected and in the correct direction. The online cumulative mistake rate is inflated by early training rounds when the model has not yet learned anything, while the test accuracy reflects only the final trained model. The fact that test mistake rate (23.5%) is lower than the cumulative online mistake rate (26%) is exactly consistent with an online learner that improves over time.",
+      "student_verification": "I verified this by checking that my mistake_rates list (computed in task_2_2.ipynb) shows a decreasing trend over time, confirming the model does improve. The final model's test accuracy of 76.5% is therefore a better reflection of the learned model than the cumulative mistake rate. I cited both numbers in my results section: '~26% (online cumulative) and a hold-out test accuracy of ~78%.'",
+      "code_used_verbatim": false,
+      "student_modification": "The results interpretation paragraph citing both the ~26% online mistake rate and ~78% test accuracy is written entirely by me. The characterization of 26% as 'consistently hover[ing] around the noise floor + concept difficulty' is my own phrasing. The LLM only confirmed that the relationship between the two metrics is expected and correct.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 2,
+      "prompt": "My SCW-I gets 26% mistake rate on a synthetic dataset with 10% noise. The paper gets 13.5%. Is this gap a sign of a bug, or can it be fully explained by dataset and hyperparameter differences?",
+      "why_important": "This was the most critical validation step in Task 2.3. The entire result comparison section depends on correctly distinguishing between an implementation error and an expected gap. Confirming the three-factor explanation (dataset structure, untuned C, noise floor) gave me a defensible and paper-grounded analysis rather than an unsupported disclaimer."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 1,
+      "prompt": "My dataset is a synthetic sklearn make_classification with 10% label noise. Which result from Table 3 is the most appropriate to compare against?",
+      "why_important": "Choosing the wrong baseline from Table 3 would undermine the entire comparison. The paper's synthetic dataset result (13.5%) is the correct reference, not splice or svmguide3. Confirming this before writing the comparison section ensured the notebook's cited reference is appropriate."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 5,
+      "prompt": "My model has a 26% online cumulative mistake rate but 76.5% hold-out test accuracy (23.5% test mistake rate). Is this relationship expected for an online learner?",
+      "why_important": "Both numbers are reported in the notebook. Without confirming that the cumulative mistake rate and test accuracy are expected to diverge for an online learner, the two numbers might appear contradictory. Confirming the correct relationship allows me to cite both confidently and explain the discrepancy correctly."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 3,
+      "prompt": "Should I plot the online cumulative mistake rate over the training stream, or a bar chart comparing my final mistake rate vs the paper's?",
+      "why_important": "The learning curve plot is a key deliverable in Task 2.3. Choosing the line plot over a bar chart was guided by this interaction, and the resulting plot directly demonstrates the online learning dynamic — the primary contribution of the SCW algorithm."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 4,
+      "prompt": "I have a five-item reproducibility checklist. Am I missing any standard reproducibility items for an online learning experiment?",
+      "why_important": "The reproducibility checklist is an explicit requirement of Task 2.3. Verifying its completeness ensured the checklist is thorough and defensible. The LLM's note about data ordering — covered by my existing random_state=42 documentation — confirmed that my setup already handles this without requiring an additional checklist item."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 2.3 of Part B. All LLM interactions were used for verification, explanation confirmation, and visualization design decisions only. No LLM-generated text was copied verbatim into the notebook. The results interpretation, gap explanation, plot code, and reproducibility checklist in task_2_3.ipynb are all written entirely in my own words. I take full responsibility for the correctness and originality of all content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 1.3",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.3",
+      "purpose": "Clarifying whether the paper has one primary baseline or two, and whether naming both CW and AROW is accurate for sub-question 1.",
+      "prompt": "In the SCW paper (Wang et al., ICML 2012), is the paper improving on CW alone, or on both CW and AROW? The abstract mentions both. Should I name one or both as the main baseline?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Clarified that both CW and AROW are named baselines: CW is the direct predecessor SCW extends, while AROW is the most competitive prior alternative. The paper's contribution is specifically positioned as improving over both — fixing CW's noise problem and fixing AROW's loss of adaptive margin.",
+      "student_verification": "I verified by reading the abstract and Section 1 which explicitly states SCW aims to be 'more robust than the original CW learning when handling noisy and non-separable data, and more effective and efficient than the state-of-the-art AROW algorithm'. Both are clearly identified as baselines in the paper.",
+      "code_used_verbatim": false,
+      "student_modification": "I used this to confirm naming both CW and AROW as baselines in sub-question 1, which is what my notebook states. The specific characterisation of CW as the 'direct predecessor' and AROW as the 'most competitive alternative' is my own framing. I then wrote the baseline identification sentence in the notebook entirely in my own words.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.3",
+      "purpose": "Understanding the specific limitation of CW's separable data assumption and why it causes poor performance on noisy data.",
+      "prompt": "The SCW paper says CW assumes separable data and makes aggressive updates. Can you explain precisely why assuming separable data causes overfitting and poor performance on noisy data? What is the mechanism of the failure?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that CW's constraint forces the weight distribution to satisfy the classification probability threshold exactly for every example. On a mislabeled or noisy example, this forces a large and incorrect shift in the distribution, corrupting the model's learned structure. The lack of a slack variable means there is no tolerance for violated constraints.",
+      "student_verification": "I verified by reading Section 3 of the paper: 'it could force to wrongly change the parameters of the distribution dramatically when handling a mislabeled instance.' The mechanism — no slack, hard constraint — is confirmed by comparing CW's optimization (Section 2.3) against SCW's Eq. 4.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the mechanism explanation to inform the limitation sentence in my notebook. My notebook states the limitation as: CW 'aggressively changes its weight distribution to satisfy the constraint of the current example, which leads to severe overfitting and poor performance on noisy, non-separable data.' This phrasing is my own synthesis — the word 'severe overfitting' and the framing around the strict separable data assumption are my own language, not reproduced from the LLM.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-07",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.3",
+      "purpose": "Understanding what the Adaptive Margin property is and why AROW loses it, to accurately explain AROW's limitation in the notebook.",
+      "prompt": "Why does AROW lose the Adaptive Margin property of CW? What is Adaptive Margin specifically, and why does AROW's regularization approach break it?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Explained that Adaptive Margin means different margin requirements are assigned to different instances based on the model's current confidence about that instance, via the phi * sqrt(x_t^T Sigma x_t) term. AROW adds a direct loss and confidence regularization term to the KL objective instead of embedding the margin inside a probability constraint, which removes this instance-adaptive scaling and makes AROW require more updates.",
+      "student_verification": "I verified by comparing the AROW update in Section 2.4 against the CW and SCW update structures. AROW's alpha_t = l(mu; (x,y)) * beta_t with a fixed gamma does not contain the confidence-scaled margin term, confirming the adaptive margin is absent.",
+      "code_used_verbatim": false,
+      "student_modification": "I used this explanation to write the AROW limitation sentence in my notebook. The sentence — 'AROW solves the noise issue by adding adaptive regularization but loses the crucial Adaptive Margin property of CW, meaning it no longer dynamically scales the margin requirement for each instance via a probability formulation, leading to computational inefficiencies (more updates required)' — is written entirely in my own words. The connection between losing adaptive margin and needing more updates is my own inference from Table 3, not from the LLM response.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.3",
+      "purpose": "Verifying that the Soft Margin SVM analogy I used to explain SCW's mechanism is accurate and appropriate.",
+      "prompt": "Is it accurate to say that SCW adds a 'slack variable penalty weighted by C to the optimization objective, akin to Soft Margin SVMs'? Is this analogy technically correct for explaining how SCW overcomes CW's aggressiveness?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the analogy is accurate and that the paper itself draws this connection explicitly — Section 3 states 'Following the similar idea of soft margin support vector machines, the adaptive margin assigns different margins for different instances via a probability formulation'. The C parameter in Eq. 4 and 5 plays exactly the role of the slack variable penalty in soft-margin SVMs.",
+      "student_verification": "I verified by finding the explicit soft-margin SVM reference in Section 3 of the paper, confirming the analogy is not just my interpretation but is stated by the authors themselves.",
+      "code_used_verbatim": false,
+      "student_modification": "I used the LLM's confirmation to retain the soft-margin SVM analogy in my notebook. The sentence 'akin to Soft Margin SVMs' is my own phrasing choice — I independently checked Section 3 to confirm the authors themselves make this comparison, which gave me confidence to use it in my answer. The full explanation of how SCW overcomes the limitation is written in my own words throughout.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 5,
+      "date": "2026-03-08",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 1.3",
+      "purpose": "Verifying the reasoning in my final sub-question about when SCW would not outperform CW on perfectly separable noise-free data.",
+      "prompt": "My answer for when SCW would not outperform CW is: on perfectly linearly separable data with no label noise and no concept drift, the aggressive CW might converge faster because the soft margin component of SCW is unnecessary and C might slow valid support vector incorporation. Is this reasoning sound?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed the reasoning is sound and grounded in Table 3 of the paper where CW achieves a lower mistake rate than SCW on synthetic data without noise (0.017 vs 0.018 for SCW-I and 0.020 for SCW-II).",
+      "student_verification": "I verified by checking Table 3 in Section 5 — synthetic data without noise row confirms CW outperforms SCW on clean separable data, validating my reasoning with empirical evidence from the paper itself.",
+      "code_used_verbatim": false,
+      "student_modification": "The failure scenario in my notebook was written entirely by me before this interaction — I submitted it to the LLM only for factual verification. After the LLM pointed to Table 3 as supporting evidence, I independently checked it and added the specific mention of the Table 3 result to the notebook as supporting evidence. The core reasoning and the three-condition framing (linearly separable, no label noise, no concept drift) are entirely my own.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 3,
+      "prompt": "Why does AROW lose the Adaptive Margin property of CW? What is Adaptive Margin specifically, and why does AROW's regularization approach break it?",
+      "why_important": "Understanding the Adaptive Margin property precisely was essential for accurately explaining AROW's limitation in sub-question 2. Stating that AROW 'loses computational efficiency due to more updates' without understanding why would have been a shallow answer — the connection between losing adaptive margin and requiring more updates is the specific insight that makes the explanation defensible in Part C."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 2,
+      "prompt": "Why does assuming separable data cause overfitting and poor performance on noisy data? What is the mechanism of the failure?",
+      "why_important": "Sub-question 2 asks for the specific limitation the paper identifies, not a generic criticism. Understanding the hard-constraint mechanism — no slack variable, every mislabeled example forces a large distribution shift — allowed me to write a precise and paper-traceable explanation of CW's failure mode."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 4,
+      "prompt": "Is it accurate to say that SCW adds a 'slack variable penalty weighted by C, akin to Soft Margin SVMs'? Is this analogy technically correct?",
+      "why_important": "The soft-margin SVM analogy is the centrepiece of my sub-question 3 explanation. Verifying it is technically accurate and actually used by the authors in Section 3 gave me confidence to use it, and means I can defend it directly in Part C by pointing to the paper's own phrasing."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 1,
+      "prompt": "Is the paper improving on CW alone, or on both CW and AROW? Should I name one or both as the main baseline?",
+      "why_important": "The rubric awards 2 marks for correctly naming the baseline. Confirming that both CW and AROW are legitimate baselines — each addressed for a different limitation — ensured my answer was complete and consistent with the paper's framing in the abstract and Section 1."
+    },
+    {
+      "rank": 5,
+      "interaction_id": 5,
+      "prompt": "On perfectly linearly separable data with no label noise and no concept drift, the aggressive CW might converge faster because the soft margin component of SCW is unnecessary. Is this reasoning sound?",
+      "why_important": "Sub-question 4 carries 4 marks and requires reasoned inference. Using the LLM to verify — not generate — my reasoning ensured I did not submit an unsupported claim. The LLM pointed me to Table 3 as empirical backing, which I then verified independently and added to the notebook as supporting evidence."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 1.3 of Part B. All LLM outputs were used partially for comprehension, verification, and clarification only. No LLM-generated text was copied verbatim into the task notebook. All content in task_1_3.ipynb is written entirely in my own words based on my direct reading of the SCW paper. I take full responsibility for the accuracy and originality of all content submitted.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}

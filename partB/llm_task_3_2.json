@@ -1,0 +1,120 @@
+{
+  "student_metadata": {
+    "name": "Manasa Chinnam",
+    "roll_number": "230078",
+    "course": "Advanced Machine Learning",
+    "exam": "Mid-Semester Examination",
+    "part": "Part B",
+    "task": "Task 3.2 — Failure Mode",
+    "submission_date": "2026-03-11"
+  },
+
+  "llm_tools_used": [
+    {
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic"
+    }
+  ],
+
+  "full_llm_interaction_log": [
+    {
+      "interaction_id": 1,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.2",
+      "purpose": "Brainstorming which failure scenario would best connect back to the assumptions identified in Task 1.2, specifically to identify a dataset distribution where SCW-I would fail noticeably.",
+      "prompt": "For the SCW-I algorithm from 'Exact Soft Confidence-Weighted Learning' (ICML 2012), which of the three key assumptions I identified — (1) Gaussian posterior over weights, (2) linear separability in the weight space, (3) i.i.d. streaming data — would produce the most visible and demonstrable failure if violated? I want to construct a failure mode experiment for my Part B exam.",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that violating the linear separability assumption (Assumption 2) would produce the most dramatic and visually clear failure. The response explained that because SCW's prediction is sgn(mu · x), it is inherently a linear classifier and any non-linearly separable dataset will expose this fundamental limitation. The concentric circles dataset (make_circles) was suggested as the clearest illustration.",
+      "student_verification": "I verified this reasoning by re-reading Section 4.2 of the paper (Representer Theorem / kernel extension section), which explicitly acknowledges that the base SCW algorithm is linear. I also confirmed that make_circles produces a dataset where no linear boundary can separate the classes, making it an ideal failure case.",
+      "code_used_verbatim": false,
+      "student_modification": "N/A — no code was used from this interaction.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 2,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.2",
+      "purpose": "Understanding what metric and visualization would best demonstrate the failure mode for the concentric circles experiment.",
+      "prompt": "If I run SCW-I on a make_circles dataset, what metric and plot would most clearly demonstrate its failure? I want to show both (a) that the data is geometrically non-linear, and (b) that SCW-I cannot learn it.",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Suggested using online cumulative mistake rate plotted over time as the primary metric (consistent with the paper's evaluation approach in Table 3), and recommended pairing it with a scatter plot of the dataset. The key insight was that if SCW-I truly cannot separate the classes, the mistake rate should converge near 50% — equivalent to random guessing — rather than declining as it would for a learnable dataset.",
+      "student_verification": "I verified that the paper uses online cumulative mistake rate as its primary evaluation metric (Section 5.2, Table 3), so this choice is consistent with earlier tasks. The 50% benchmark for random guessing is a standard interpretation that I confirmed independently by reasoning about the binary classification problem.",
+      "code_used_verbatim": false,
+      "student_modification": "N/A — no code was used from this interaction.",
+      "confidence_level": 5
+    },
+    {
+      "interaction_id": 3,
+      "date": "2026-03-10",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.2",
+      "purpose": "Debugging a divide-by-zero issue in the beta_t computation during the online update step when u_t was very small.",
+      "prompt": "In my SCW-I implementation, I'm getting a RuntimeWarning: invalid value encountered in double_scalars when computing beta_t = (alpha_t * phi) / (sqrt(u_t) + v_t * alpha_t * phi). The denominator is occasionally hitting zero or near-zero. How do I safely handle this without changing the mathematical correctness of the update?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Suggested adding a conditional guard: if the denominator is zero, set beta_t = 0 (i.e., skip the covariance update for that step). Also suggested adding a guard to skip the update entirely if u_t < 0, which can occur due to floating-point precision errors in intermediate computations.",
+      "student_verification": "I verified that setting beta_t = 0 when the denominator is zero is mathematically safe — it simply means the covariance matrix is not updated for that example, which is a conservative choice consistent with the passive update logic in the original algorithm. I traced through the formulas in Proposition 1 of the paper to confirm this.",
+      "code_used_verbatim": false,
+      "student_modification": "I applied the defensive guard in my own implementation. The specific condition checks I used (if u_t < 0: return and the ternary for beta_t) were written by me based on the LLM's explanation of the issue, not copied from LLM output.",
+      "confidence_level": 4
+    },
+    {
+      "interaction_id": 4,
+      "date": "2026-03-11",
+      "tool_name": "Claude",
+      "model": "Claude Sonnet",
+      "provider": "Anthropic",
+      "task_tag": "Task 3.2",
+      "purpose": "Reviewing the explanation paragraph connecting the failure to the paper's assumptions before finalizing the markdown cell.",
+      "prompt": "I wrote this explanation for why SCW-I fails on concentric circles: 'The method fails because SCW's update rule mu_{t+1} = mu_t + alpha_t * y_t * Sigma_t * x_t only adjusts a linear decision boundary. The concentric circles dataset has no linear separator, so the model permanently predicts near random chance (~50% mistake rate). This connects to Assumption 3 from Task 1.2 which stated that the data must be linearly separable in weight space.' Is this explanation technically accurate and well-connected to the paper?",
+      "llm_response_used": "Partially",
+      "how_it_helped": "Confirmed that the explanation was technically accurate and that the connection to the linear separability assumption was correct. It also suggested strengthening the explanation by explicitly mentioning that the concentric structure means any global linear hyperplane must bisect the inner cluster, which is why the mistake rate cannot drop below ~50%. This phrasing was useful and incorporated into my explanation.",
+      "student_verification": "I re-read Assumption 3 from my own Task 1.2 notebook and confirmed the connection is traceable. I also re-read the paper's Section 4.2 (kernel extension) which explicitly states that the base SCW method is linear, and that the kernel trick is needed for non-linear cases — further validating my failure mode reasoning.",
+      "code_used_verbatim": false,
+      "student_modification": "N/A — no code was used from this interaction. I wrote the explanation cell myself and incorporated only the geometric reasoning about the inner cluster bisection, which was suggested by the LLM.",
+      "confidence_level": 5
+    }
+  ],
+
+  "top_5_prompts": [
+    {
+      "rank": 1,
+      "interaction_id": 1,
+      "prompt": "For the SCW-I algorithm from 'Exact Soft Confidence-Weighted Learning' (ICML 2012), which of the three key assumptions I identified — (1) Gaussian posterior over weights, (2) linear separability in the weight space, (3) i.i.d. streaming data — would produce the most visible and demonstrable failure if violated? I want to construct a failure mode experiment for my Part B exam.",
+      "why_important": "This was the foundational decision for the entire Task 3.2 experiment. Choosing the right failure mode required connecting directly back to the assumptions from Task 1.2, and this prompt helped me confirm that violating linear separability would produce the clearest and most defensible failure demonstration."
+    },
+    {
+      "rank": 2,
+      "interaction_id": 4,
+      "prompt": "I wrote this explanation for why SCW-I fails on concentric circles: [explanation text]. Is this explanation technically accurate and well-connected to the paper?",
+      "why_important": "This was a verification step to ensure the reasoning I wrote independently was sound before submitting. The LLM's suggestion to add the geometric bisection argument strengthened the explanation's connection to the paper's assumptions."
+    },
+    {
+      "rank": 3,
+      "interaction_id": 2,
+      "prompt": "If I run SCW-I on a make_circles dataset, what metric and plot would most clearly demonstrate its failure? I want to show both (a) that the data is geometrically non-linear, and (b) that SCW-I cannot learn it.",
+      "why_important": "This determined the evaluation design for the failure mode experiment. Using the same metric as in Task 2.2 (online cumulative mistake rate) ensures consistency across the notebook and directly mirrors the paper's own evaluation methodology."
+    },
+    {
+      "rank": 4,
+      "interaction_id": 3,
+      "prompt": "In my SCW-I implementation, I'm getting a RuntimeWarning: invalid value encountered in double_scalars when computing beta_t. The denominator is occasionally hitting zero or near-zero. How do I safely handle this without changing the mathematical correctness of the update?",
+      "why_important": "Resolving this numerical stability issue was necessary to make the experiment run cleanly. The fix was mathematically justified by the passive update principle in the paper (Proposition 1), and I verified it before applying it."
+    }
+  ],
+
+  "student_declaration": {
+    "statement": "I declare that this JSON file contains a complete and honest record of my LLM usage for Task 3.2. All LLM outputs were used partially and verified independently against the paper and my own understanding. The failure mode scenario, dataset choice, metric selection, and explanation were all decisions I made myself. No LLM-generated code was copied verbatim into the notebook. I take full responsibility for the content of this task.",
+    "understanding_acknowledged": true,
+    "signature": "Manasa Chinnam",
+    "date": "2026-03-11"
+  }
+}
